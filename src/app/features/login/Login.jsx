@@ -19,9 +19,9 @@ export const LoginForm = () => {
             <main>
                 <Box
                     sx={{
-                        width: 400,
+                        width: { xs: '70%', sm: 400 },
                         margin: 'auto',
-                        padding: 4,
+                        padding: { xs: 2, sm: 4 },
                         backgroundColor: '#09090b',
                         borderRadius: 3,
                         border: '1px solid #848486'
@@ -73,6 +73,7 @@ export const LoginForm = () => {
                                         variant="contained"
                                         fullWidth
                                         type="submit"
+                                        disabled={isSubmitting}
                                         sx={{ mt: 4,
                                         }}
                                         >
