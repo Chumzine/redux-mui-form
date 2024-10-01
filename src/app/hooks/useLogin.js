@@ -1,9 +1,12 @@
 import { useDispatch } from "react-redux";
 import { login } from "../features/login/loginSlice";
-import { toast } from "react-toastify";
+import { useState, useEffect } from "react";
+
 
 export const useLogin = () => {
     const dispatch = useDispatch();
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState("");
 
     const handleLogin = (values) => {
         const { email, password } = values;
@@ -13,13 +16,27 @@ export const useLogin = () => {
             password: "password123"
         }
 
+        setSuccess(false);
+        setError("");
+
         if (email === userCredentials.email && password === userCredentials.password) {
             dispatch(login({ email, password }));
-            toast.success("Login successful");
+            setSuccess(true);
         } else {
-            toast.error("Invalid email or password");
+            setError("Invalid email or password. Please try again.");
         }
     };
 
-    return { handleLogin };
+    useEffect(() => {
+        if (error || success) {
+            const timer = setTimeout(() => {
+                setError("");
+                setSuccess(false);
+            }, 5000);
+
+            return () => clearTimeout(timer); 
+        }
+    }, [error, success]);
+
+    return { handleLogin, success, error };
 };

@@ -2,9 +2,11 @@ import { Formik } from 'formik';
 import { Button, TextField, Typography, FormLabel, Box } from '@mui/material';
 import * as Yup from 'yup';
 import { useLogin } from '../../hooks/useLogin';
-import { ToastContainer } from 'react-toastify';
 import { theme } from './mui-theme';
 import { ThemeProvider } from '@mui/material/styles';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+
 
 const validationSchema = Yup.object({
     email: Yup.string().email("Enter a valid email").required("Email is required"),
@@ -12,11 +14,24 @@ const validationSchema = Yup.object({
 })
 
 export const LoginForm = () => {
-    const { handleLogin } = useLogin();
+    const { handleLogin, success, error } = useLogin();
 
     return (
         <ThemeProvider theme={theme}>
             <main>
+                {success && (
+                    <Alert severity="success" sx={{ mb: 2 }}>
+                        <AlertTitle>Success</AlertTitle>
+                        Your Login was successful. Welcome back!
+                    </Alert>)}
+
+                {error && (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                        <AlertTitle>Error</AlertTitle>
+                        {error}
+                    </Alert>
+                )}
+
                 <Box
                     sx={{
                         width: { xs: '70%', sm: 400 },
@@ -36,7 +51,10 @@ export const LoginForm = () => {
                     <Formik
                         initialValues = {{ email: "", password: ""}}
                         validationSchema={validationSchema}
-                        onSubmit = {(values) => handleLogin(values)}
+                        onSubmit = {(values, { resetForm }) => {
+                            handleLogin(values);
+                            resetForm();
+                        }}
                     >
                         {({ values, errors, touched, handleChange,
                         handleBlur, handleSubmit, isSubmitting }) => {
@@ -84,7 +102,6 @@ export const LoginForm = () => {
                         }
                     </Formik>
                 </Box>
-                <ToastContainer />
             </main>
         </ThemeProvider>
     );
